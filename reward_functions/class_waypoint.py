@@ -29,7 +29,13 @@ class Waypoint:
         return boundries
 
     def track_distance_from_car(self):
-        start_index = closest_waypoints[1]
+        in_front_of_car = self.is_in_front_of_car(self.center_waypoint):
+        if in_front_of_car
+            start_index = self.closest_waypoints[1]
+            end_index = self.vertex_index
+        else:
+            start_index = self.vertex_index
+            end_index = self.closest_waypoints[1]
         
 
     def get_boundry(self, point0, point1, side):
