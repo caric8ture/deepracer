@@ -124,3 +124,21 @@ class Waypoint:
         else:
             next_index = index + 1
         return next_index
+
+    def is_in_front_of_car(self, point):
+        front_of_car = self.closest_waypoints[1]
+        in_front_of_car = False
+        if self.heading > -90 and heading < 90:
+            if self.heading > 0:
+                if point[0] > front_of_car[0] and point[1] > front_of_car[1]:
+                    in_front_of_car = True
+            elif point[0] > front_of_car[0] and point[1] < front_of_car[1]:
+                in_front_of_car = True
+        elif self.heading > 0:
+            if point[0] < front_of_car[0] and point[1] > front_of_car[1]:
+                in_front_of_car = True
+            elif point[0] < front_of_car[0] and point[1] < front_of_car[1]:
+                in_front_of_car = True
+        return in_front_of_car
+                    
+        
