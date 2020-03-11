@@ -6,31 +6,56 @@ class Waypoint:
         self.waypoints = params['waypoints']
         self.closest_waypoints = params['closest_waypoints']
         self.track_width = params['track_width']
+        self.heading = params['heading']
         self.vertex_index = index
         self.center_waypoint = self.waypoints[self.vertex_index]
         self.look_ahead_distance = 5 # distance to look ahead this will need to be changed
         self.border_distance = self.track_width/2
         self.border_waypoints = self.find_borders()
-        self.distance_from_front_of_car() = track_distance_from_car()
-        
+        self.left_waypoint = self.border_waypoints[0]
+        self.right_waypoint = self.border_waypoints[1]
+        self.waypoint_distance_from_front_of_car = self.waypoint_distance_from_car()
 
     def find_borders(self):
-        index0 = find_previous_waypoint(self.vertex_index)
-        index1 = find_next_waypoint(self.vertex_index)
+        index0 = self.find_previous_waypoint(self.vertex_index)
+        index1 = self.find_next_waypoint(self.vertex_index)
         borders = self.get_left_and_right_boundries(index0, index1)
+        return borders
 
         
     def get_left_and_right_boundries(self, index0, index1):
-        point0 = self.waypoints(index0)
-        point1 = self.waypoints(index1)
+        point0 = self.waypoints[index0]
+        point1 = self.waypoints[index1]
         left_point = self.get_boundry(point0, point1, "left")
         right_point = self.get_boundry(point0, point1, "right")
         boundries = [left_point, right_point]
         return boundries
 
-    def track_distance_from_car(self):
-        start_index = closest_waypoints[1]
-        
+    def waypoint_distance_from_car(self):
+        forward_of_car = self.is_in_front_of_car(self.center_waypoint)
+        total_distance = 0
+        direction = 1
+        distance_found = False
+        if not forward_of_car:
+            start_index = self.vertex_index # if behind car start at waypoint
+            end_index = self.closest_waypoints[1] # ends in front of the car
+            direction = -1
+        else:
+            start_index = self.closest_waypoints[1] # start at the front of the car
+            end_index = self.vertex_index # end at the waypoint
+        if start_index == end_index:
+            distance_found = True
+        current_index = start_index
+        while not distance_found:
+            next_index = self.find_next_waypoint(current_index)
+            point0 = self.waypoints[current_index]
+            point1 = self.waypoints[next_index]
+            distance = self.distance(point0, point1)
+            total_distance += distance
+            current_index = next_index
+            if current_index == end_index:
+                distance_found = True
+        return total_distance * direction     
 
     def get_boundry(self, point0, point1, side):
         if side == "right":
@@ -60,20 +85,20 @@ class Waypoint:
                 x_new = xv - direction * constant
             else:           # direction of travel downward
                 x_new = xv + direction * constant
-            y_new = self.get_y_given_two_points_and_new_x(vertex, [x_in, y_in], x_new)
+            y_new = self.get_y_given_two_points_and_new_x(self.center_waypoint, [x_in, y_in], x_new)
             border = [x_new, y_new]
         return border
         
-    def get_incenter(self, point0, vertex, point1):
-        distance_a = self.distance(point0, vertex)
-        distance_b = self.distance(vertex, point1)
+    def get_incenter(self, point0, point1):
+        distance_a = self.distance(point0, self.center_waypoint)
+        distance_b = self.distance(self.center_waypoint, point1)
         distance_c = self.distance(point1, point0)    
         p = distance_a + distance_b + distance_c
         
         Ax = point0[0]
         Ay = point0[1]
-        Bx = vertex[0]
-        By = vertex[1]
+        Bx = self.center_waypoint[0]
+        By = self.center_waypoint[1]
         Cx = point1[0]
         Cy = point1[1]
         if distance_a + distance_b == distance_c: # for straight lines
@@ -124,21 +149,29 @@ class Waypoint:
         else:
             next_index = index + 1
         return next_index
-
     def is_in_front_of_car(self, point):
-        front_of_car = self.closest_waypoints[1]
+        front_of_car = self.waypoints[self.closest_waypoints[1]]
         in_front_of_car = False
-        if self.heading > -90 and heading < 90:
-            if self.heading > 0:
-                if point[0] > front_of_car[0] and point[1] > front_of_car[1]:
-                    in_front_of_car = True
-            elif point[0] > front_of_car[0] and point[1] < front_of_car[1]:
+        if self.heading > -90 and self.heading < 90:
+            if point[0] > front_of_car[0]:
                 in_front_of_car = True
-        elif self.heading > 0:
-            if point[0] < front_of_car[0] and point[1] > front_of_car[1]:
+        elif self.heading == 90:
+            if point[1] > front_of_car[1]:
                 in_front_of_car = True
-            elif point[0] < front_of_car[0] and point[1] < front_of_car[1]:
+        elif self.heading == -90:
+            if point[1] < front_of_car[1]:
+                in_front_of_car = True
+        else:
+            if point[0] < front_of_car[0]:
                 in_front_of_car = True
         return in_front_of_car
+
+    def distance(self, point0, point1):
+        distance = math.sqrt((point1[0] - point0[0])**2 + (point1[1] - point0[1])**2 )
+        return distance
+
+    def get_y_given_m_x_b(self, m, x, b):
+        y = m * x + b
+        return y
                     
         
