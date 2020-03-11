@@ -3,6 +3,7 @@ import math
 class Waypoint:
 
     def __init__(self, params, index):
+        self.params = params
         self.waypoints = params['waypoints']
         self.closest_waypoints = params['closest_waypoints']
         self.track_width = params['track_width']
@@ -173,5 +174,3 @@ class Waypoint:
     def get_y_given_m_x_b(self, m, x, b):
         y = m * x + b
         return y
-                    
-        

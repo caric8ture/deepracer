@@ -52,7 +52,7 @@ class TestClassRacer(unittest.TestCase):
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
         print(f"x_left {x_left}")
-        self.assertEqual(round(x_left), -2)
+        self.assertEqual(round(x_left,3), -5.354)
         
         
     
