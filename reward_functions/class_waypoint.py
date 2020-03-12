@@ -10,12 +10,33 @@ class Waypoint:
         self.heading = params['heading']
         self.vertex_index = index
         self.center_waypoint = self.waypoints[self.vertex_index]
+        self.index0 = self.find_previous_waypoint(self.vertex_index)
+        self.waypoint0 = self.waypoints[self.index0]
+        self.track_angle_waypoint0_vertex = self.get_track_angle(self.waypoint0, self.center_waypoint)
+        self.index1 = self.find_next_waypoint(self.vertex_index)
+        self.waypoint1 = self.waypoints[self.index1]
+        self.track_angle_vertex_waypoint1 = self.get_track_angle(self.center_waypoint, self.waypoint1)
         self.look_ahead_distance = 5 # distance to look ahead this will need to be changed
         self.border_distance = self.track_width/2
-        self.border_waypoints = self.find_borders()
+        self.border_waypoints = self.get_left_and_right_boundries()
         self.left_waypoint = self.border_waypoints[0]
         self.right_waypoint = self.border_waypoints[1]
         self.waypoint_distance_from_front_of_car = self.waypoint_distance_from_car()
+        self.vertex_turn_angle = self.get_angle_of_track_sections()
+
+    def get_track_angle(self, point0, point1):
+        radians = math.atan2(point1[1] - point0[1], point1[0] - point0[0])
+        angle = math.degrees(radians)
+        return angle
+
+    def get_angle_of_track_sections(self):
+        angle0 = self.track_angle_waypoint0_vertex
+        angle1 = self.track_angle_vertex_waypoint1
+        track_turn_angle = angle1 - angle0
+        if abs(track_turn_angle) > 180:
+            track_turn_angle = 360 - abs(track_turn_angle)
+        return track_turn_angle
+
 
     def find_borders(self):
         index0 = self.find_previous_waypoint(self.vertex_index)
@@ -24,9 +45,9 @@ class Waypoint:
         return borders
 
         
-    def get_left_and_right_boundries(self, index0, index1):
-        point0 = self.waypoints[index0]
-        point1 = self.waypoints[index1]
+    def get_left_and_right_boundries(self):
+        point0 = self.waypoints[self.index0]
+        point1 = self.waypoints[self.index1]
         left_point = self.get_boundry(point0, point1, "left")
         right_point = self.get_boundry(point0, point1, "right")
         boundries = [left_point, right_point]
