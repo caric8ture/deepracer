@@ -53,6 +53,8 @@ class TestClassRacer(unittest.TestCase):
         x_left = class_under_test.left_waypoint[0]
         print(f"x_left {x_left}")
         self.assertEqual(round(x_left,3), -5.354)
+
+    def test_get_track_angle(self)
         
         
     
