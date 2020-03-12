@@ -13,14 +13,12 @@ class TestClassRacer(unittest.TestCase):
     def test_borde_waypoints(self):
         class_under_test = Waypoint(self.params, 5)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(class_under_test.left_waypoint[0], 8)
 
         self.params['waypoints'] = get_vertical_waypoints()
         self.params['closest_waypoints'] = [0,1]
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(class_under_test.left_waypoint[0], 6.5)
 
         
@@ -28,7 +26,6 @@ class TestClassRacer(unittest.TestCase):
         self.params['closest_waypoints'] = [0,1]
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(class_under_test.left_waypoint[0], 7.5)
 
 
@@ -36,7 +33,6 @@ class TestClassRacer(unittest.TestCase):
         self.params['closest_waypoints'] = [0,1]
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(class_under_test.left_waypoint[0], 2)
 
 
@@ -44,19 +40,32 @@ class TestClassRacer(unittest.TestCase):
         self.params['closest_waypoints'] = [0,1]
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(round(x_left, 3), -4.646)
 
         self.params['waypoints'] = get_up_left_waypoints()
         self.params['closest_waypoints'] = [0,1]
         class_under_test = Waypoint(self.params, 4)
         x_left = class_under_test.left_waypoint[0]
-        print(f"x_left {x_left}")
         self.assertEqual(round(x_left,3), -5.354)
+        
+        
+    def test_index_values(self):
+        class_under_test = Waypoint(self.params, 4)
+        self.assertEqual(class_under_test.vertex_index, 4)
+        self.assertEqual(class_under_test.index0, 3)
+        self.assertEqual(class_under_test.index1, 5)
 
-    def test_get_track_angle(self)
-        
-        
+    def test_index_values_finish_start_position(self):
+        class_under_test = Waypoint(self.params, 29)
+        self.assertEqual(class_under_test.vertex_index, 29)
+        self.assertEqual(class_under_test.index0, 28)
+        self.assertEqual(class_under_test.index1, 1)
+
+        class_under_test = Waypoint(self.params, 0)
+        self.assertEqual(class_under_test.vertex_index, 0)
+        self.assertEqual(class_under_test.index0, 28)
+        self.assertEqual(class_under_test.index1, 1)
+
     
 
 
