@@ -4,6 +4,7 @@ class Waypoint:
 
     def __init__(self, params, index):
         self.params = params
+        self.min_angle_waypoint_distance = .2
         self.waypoints = params['waypoints']
         self.closest_waypoints = params['closest_waypoints']
         self.track_width = params['track_width']
@@ -22,19 +23,61 @@ class Waypoint:
         self.left_waypoint = self.border_waypoints[0]
         self.right_waypoint = self.border_waypoints[1]
         self.waypoint_distance_from_front_of_car = self.waypoint_distance_from_car()
-        self.vertex_turn_angle = self.get_angle_of_track_sections()
+        self.vertex_turn_angle = self.get_waypoint_track_angle()
+        self.vertex_turn_angle_at_min_distance = self.get_track_angle_at_min_distance() # ensure that the angle is measured at a reasonable distance
+    
+    def __str__(self):
+        obj = ""
+        obj += "waypoints: " + self.waypoints
+        return obj
+
+
+
+    def get_track_angle_at_min_distance(self):
+        calc_distance = 0
+        waypoint_index = self.vertex_index
+        while calc_distance < self.min_angle_waypoint_distance:
+            previous_index = self.find_previous_waypoint(waypoint_index)
+            section_distance = self.distance(self.waypoints[previous_index], self.waypoints[waypoint_index])
+            calc_distance += section_distance
+            if calc_distance >= self.min_angle_waypoint_distance:
+                back_index = previous_index
+            else:
+                waypoint_index = previous_index
+        angle0 = self.get_track_angle(self.waypoints[back_index], self.waypoints[self.vertex_index])
+        calc_distance = 0.0
+        waypoint_index = self.vertex_index
+        while calc_distance < self.min_angle_waypoint_distance:
+            next_index = self.find_next_waypoint(waypoint_index)
+            section_distance = self.distance(self.waypoints[next_index], self.waypoints[waypoint_index])
+            calc_distance += section_distance
+            if calc_distance >= self.min_angle_waypoint_distance:
+                front_index = next_index
+            else:
+                waypoint_index = next_index
+        angle1 = self.get_track_angle(self.waypoints[self.vertex_index], self.waypoints[front_index])
+        track_angle = self.get_angle_of_track_sections(angle0, angle1)
+        return track_angle
 
     def get_track_angle(self, point0, point1):
         radians = math.atan2(point1[1] - point0[1], point1[0] - point0[0])
         angle = math.degrees(radians)
         return angle
 
-    def get_angle_of_track_sections(self):
+    def get_waypoint_track_angle(self):
         angle0 = self.track_angle_waypoint0_vertex
         angle1 = self.track_angle_vertex_waypoint1
+        angle_between_track_section = self.get_angle_of_track_sections(angle0, angle1)
+        
+        return angle_between_track_section
+
+
+    def get_angle_of_track_sections(self, angle0, angle1):
         track_turn_angle = angle1 - angle0
         if abs(track_turn_angle) > 180:
             track_turn_angle = 360 - abs(track_turn_angle)
+        if track_turn_angle == 0:
+            track_turn_angle = 180
         return track_turn_angle
 
 

@@ -21,6 +21,16 @@ class TestClassSection(unittest.TestCase):
         track_angle = class_under_test.track_angle
         self.assertEqual(track_angle, 0)
 
+    def test_is_between(self):
+        self.params['waypoints'] = get_horizontal_left_waypoints()
+        self.params['x'] = 2.5
+        self.params['y'] = 7.2
+        self.params['heading'] = 90
+        class_under_test = Section(params, 1)
+        is_btwn = class_under_test.is_between(2.5, class_under_test.back_waypoint.left_waypoint,class_under_test.front_waypoint.left_waypoint )
+        self.assertTrue(is_btwn)
+        
+
 
 if __name__ == '__main__':
     unittest.main()

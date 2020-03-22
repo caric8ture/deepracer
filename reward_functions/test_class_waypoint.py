@@ -66,7 +66,14 @@ class TestClassRacer(unittest.TestCase):
         self.assertEqual(class_under_test.index0, 28)
         self.assertEqual(class_under_test.index1, 1)
 
-    
+    def test_track_angle_waypoint0_vertex(self):
+        class_under_test = Waypoint(self.params, 4)
+        self.assertEqual(class_under_test.vertex_turn_angle , 180)
+        self.assertEqual(class_under_test.vertex_turn_angle_at_min_distance, 180)
+
+    def test_waypoint_str(self):
+        class_under_test = Waypoint(self.params, 1)
+        print(class_under_test.__str__())
 
 
  
