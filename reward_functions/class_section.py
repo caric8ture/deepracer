@@ -1,4 +1,5 @@
 import math
+from class_waypoint import *
 
 class Section:
 
@@ -56,9 +57,8 @@ class Section:
 
     def is_between(self, x, point0, point1):
         is_between = False
-        x0 = float(point0)
-        x1 = float(point1)
-        x = float(x)
+        x0 = point0[0]
+        x1 = point1[0]
         if (x0 >= x and x >= x1) or (x1 >= x and x >= x0):
             print(f"{x0} >= {x} >= {x1} or {x1} >= {x} >= {x0}")
             is_between = True
