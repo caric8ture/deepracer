@@ -23,18 +23,28 @@ class Section:
         else:
             m1 = math.tan(heading_radians)
             b1 = position_y - m1 * position_x
-            near_left = self.back_waypoint.left_waypoint
-            near_right = self.back_waypoint.right_waypoint
-            far_left = self.front_waypoint.left_waypoint
-            far_right = self.front_waypoint.right_waypoint
+            back_left = self.back_waypoint.left_waypoint
+            back_right = self.back_waypoint.right_waypoint
+            front_left = self.front_waypoint.left_waypoint
+            front_right = self.front_waypoint.right_waypoint
             left_is_parallel = self.parallel(m1, near_left, far_left)
+            
     
     def find_vertical_intersect(self):
-        near_left = self.waypoint0.left_waypoint
-        near_right = self.waypoint0.right_waypoint
-        far_left = self.waypoint1.left_waypoint
-        far_right = self.waypoint1.right_waypoint
-        left_found = self.is_between(self.x, near_left[0], far_left[0])
+        back_left = self.waypoint0.left_waypoint
+        back_right = self.waypoint0.right_waypoint
+        front_left = self.waypoint1.left_waypoint
+        front_right = self.waypoint1.right_waypoint
+        left_found = self.is_between(self.x, back_left, front_left)
+        right_found = self.is_between(self.x, back_right, front_right)
+        if left_found:
+            end0 = back_left
+            end1 = front_left
+        elif right_found:
+            end0 = back_right
+            end1 = front_right
+        else:
+            end0
 
     def parallel(self, m1, point0, point1):
         m2 = self.m_slope(point0, point1)
@@ -56,11 +66,11 @@ class Section:
         
 
     def is_between(self, x, point0, point1):
+        print(f"point0: {point0}, point1: {point1}")
         is_between = False
         x0 = point0[0]
         x1 = point1[0]
         if (x0 >= x and x >= x1) or (x1 >= x and x >= x0):
-            print(f"{x0} >= {x} >= {x1} or {x1} >= {x} >= {x0}")
             is_between = True
             if self.heading > -90 and self.heading < 90:
                 if x < self.x :

@@ -126,7 +126,6 @@ class Waypoint:
         direction = 1
         if side == "right":
             direction = -1
-        print(f"direction: {direction}, side: {side}")
         in_center = self.get_incenter(point0, point1)
         x0 = point0[0]
         y0 = point0[1]
@@ -136,19 +135,11 @@ class Waypoint:
         y1 = point1[1]
         x_in = in_center[0]
         y_in = in_center[1]
-        print(f"x_in: {x_in}, xv: {xv}, x0: {x0}, direction: {direction}")
         if x_in == xv:  # verticle bisector
             if x0 < xv :          # moving from left to right
-                print("left to right")
-                
                 y_new = yv + direction * self.border_distance
-                print(f"y_new = yv + direction * border_distance: {y_new} = {yv} + {direction} * {self.border_distance}")
             else:                   # moving from right to left
-                print("right to left")
-                
                 y_new = yv - direction * self.border_distance
-                print(f"y_new = yv + direction * border_distance: {y_new} = {yv} - {direction} * {self.border_distance}")
-            print(f"vertical y_new : {y_new}, side: {side}")
             border = [xv, y_new]
         else:
             m = (y_in - yv)/(x_in - xv)
@@ -221,6 +212,7 @@ class Waypoint:
         else:
             next_index = index + 1
         return next_index
+    
     def is_in_front_of_car(self, point):
         front_of_car = self.waypoints[self.closest_waypoints[1]]
         in_front_of_car = False
